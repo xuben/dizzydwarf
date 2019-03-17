@@ -6,7 +6,17 @@ package com.ben.dizzydwarf;
  */
 public class App
 {
-    public static void main( String[] args )
+	private String msg;
+	
+    public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
+
+	public static void main( String[] args )
     {
         System.out.println( "Hello World!" );
     }
