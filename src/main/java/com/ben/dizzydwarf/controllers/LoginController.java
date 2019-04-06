@@ -10,7 +10,6 @@ import java.util.Collection;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import org.springframework.stereotype.Controller;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ben.dizzydwarf.App;
 import com.ben.dizzydwarf.User;
+import com.ben.dizzydwarf.UserDao;
 
 /**
  * Action dealing with signing up and login
@@ -40,17 +40,12 @@ public class LoginController {
 			app.setMsg("invalid username or password");
 			return app;
 		}
-		HttpSession session = req.getSession(true);
-		String uname = (String) session.getAttribute("uname");
-		String passwd = (String) session.getAttribute("passwd");
-		if (null == uname || null == passwd) {
-			app.setMsg("you haven't registered");
-			return app;
-		}
-		if (uname.equals(username) && passwd.equals(password)) {
-			app.setMsg("success");
-		} else {
+		UserDao userDao = new UserDao();
+		User user = userDao.getUser(username);
+		if (null == user || null == user.getPassword() || !user.getPassword().equals(password)) {
 			app.setMsg("wrong username or password");
+		} else {
+			app.setMsg("success");
 		}
 
 		return app;
@@ -58,16 +53,18 @@ public class LoginController {
 
 	@RequestMapping("/register")
 	@ResponseBody
-	public String register(@ModelAttribute User user, HttpServletRequest req) {
+	public String register(@ModelAttribute User user, HttpServletRequest req) throws IOException {
 		String username = user.getUsername();
-		String password = user.getPassword1();
+		String password = user.getPassword();
 		if (null == username || null == password || username.trim().length() <= 0 || password.trim().length() <= 0) {
 			return "invalid username or password";
 		}
-		HttpSession session = req.getSession(true);
-		session.setAttribute("uname", username);
-		session.setAttribute("passwd", password);
-		return "success";
+		UserDao userDao = new UserDao();
+		if (userDao.createUser(user) > 0) {
+			return "success";
+		} else {
+			return "failed";
+		}
 	}
 
 	@RequestMapping("/upload")

@@ -2,18 +2,18 @@ package com.ben.dizzydwarf;
 
 public class User {
 
-	private String username;
-	private String password1;
+	private String name;
+	private String password;
 	public String getUsername() {
-		return username;
+		return name;
 	}
 	public void setUsername(String username) {
-		this.username = username;
+		this.name = username;
 	}
-	public String getPassword1() {
-		return password1;
+	public String getPassword() {
+		return password;
 	}
-	public void setPassword1(String password) {
-		this.password1 = password;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 }
